@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <title>StellarVista</title>
+</head>
+<body>
+
+  <!-- Header / Logo -->
+  <header>
+    <div id="logo">
+      <!-- paste your SVG icon here -->
+        <img src="img/stellarVistaLogo_black icon.png" alt="StellarVistaIcon">
+        <!-- <svg viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19.27 8.27L14.64 11.97L16.18 18L12 14.77L7.82 18L9.36 11.97L4.73 8.27L10.91 8.26L12 2Z"/></svg> -->
+        <div class="wordmark">StellarVista</div>
+    </div>
+    <nav>
+      <a href="#onboarding">Get Started</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <svg class="star-icon-1" viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19.27 8.27L14.64 11.97L16.18 18L12 14.77L7.82 18L9.36 11.97L4.73 8.27L10.91 8.26L12 2Z"/></svg>
+    <svg class="star-icon-2" viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19.27 8.27L14.64 11.97L16.18 18L12 14.77L7.82 18L9.36 11.97L4.73 8.27L10.91 8.26L12 2Z"/></svg>
+    <svg class="star-icon-3" viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19.27 8.27L14.64 11.97L16.18 18L12 14.77L7.82 18L9.36 11.97L4.73 8.27L10.91 8.26L12 2Z"/></svg>
+    <svg class="star-icon-4" viewBox="0 0 24 24"><path d="M12 2L13.09 8.26L19.27 8.27L14.64 11.97L16.18 18L12 14.77L7.82 18L9.36 11.97L4.73 8.27L10.91 8.26L12 2Z"/></svg>
+    <div class="hero-content">
+        <h1>Your Daily Portal to the Stars</h1>
+        <p>Every morning, wake up to a new cosmic vista—planets, nebulae, galaxies, and more.</p>
+        <button id="btnToday" class="btn">Explore Today</button>
+        <p class="extraPadding">Or pick your custom data, and view the image of that day</p>
+        <input type="date" id="date" class="input" value=>
+        <button id="btnGetImg" class="btn">Get Image</button>
+    </div>
+  </section>
+
+  <!-- Onboarding Slider -->
+  <section class="onboarding" id="onboarding">
+    <h2 id="title">Today’s Cosmic Wonder</h2>
+    <div class="slides" id="slides">
+        <div class="slide">
+            <div class="image-wrapper">
+                <img id='todaysImg' src="" alt="">
+            </div>
+            <div class="video-wrapper" id="video-wrapper">
+                <iframe id='todaysVid' src="" frameborder="0" alt="placeholder"></iframe>
+            </div>
+            <h3>Discover Today’s Cosmic Wonder</h3>
+            <p id="explanation">Watch a planet rise on your screen each morning.</p>
+        </div>
+    </div>
+    <div class="dots" id="dots">
+      <div class="dot active" data-slide="0"></div>
+      <div class="dot" data-slide="1"></div>
+      <div class="dot" data-slide="2"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 StellarVista &bull; All rights reserved.
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
