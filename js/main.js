@@ -7,7 +7,7 @@ function setDefaultdate(){
 };
 
 async function getApiKey() {
-    const response = await fetch('https://stellarvista.onrender.com');
+    const response = await fetch('https://stellarvista.onrender.com/apikey');
     const data = await response.json();
     return data.apiKey;
 }
