@@ -3,8 +3,8 @@
   1) CSS Variables
 ────────────────────────────────────────────────────────────────────────── */
   :root {
-    --primary-start: #2c2f4c;    /* deep indigo */
-    --primary-end:   #4f4f91;    /* indigo gradient end */
+    --primary-start: #3a3f68;    /* deep indigo */
+    --primary-end:   #5f5fac;    /* indigo gradient end */
     --accent:        #c8c8e0;    /* shimmering silver */
     --secondary-1:   #66ffcc;    /* cosmic teal */
     --secondary-2:   #d8b8ff;    /* soft lavender */
@@ -44,6 +44,7 @@
     font-size: 1.5rem; font-weight: bold;
     background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
     -webkit-background-clip: text; color: transparent;
+    background-clip: text; color: transparent;
   }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -68,6 +69,7 @@
     font-size: 3rem;
     background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
     -webkit-background-clip: text; color: transparent;
+    background-clip: text; color: transparent;
     margin-bottom: 1rem;
     animation: arcExpand 1s ease-out forwards;
   }
