@@ -1,3 +1,11 @@
+// attach listener after DOM is ready
+document.getElementById('btnToday')
+        .addEventListener('click', todaysImage);
+
+// Fetch Function to get Image by User Selected data
+document.getElementById('btnGetImg')
+        .addEventListener('click', getFetch);
+
 //Set default date to currentday
 setDefaultdate();
 function setDefaultdate(){
@@ -11,15 +19,6 @@ async function getApiKey() {
     const data = await response.json();
     return data.apiKey;
 }
-
-// attach listener after DOM is ready
-document.getElementById('btnToday')
-        .addEventListener('click', todaysImage);
-
-// Fetch Function to get Image by User Selected data
-document.getElementById('btnGetImg')
-        .addEventListener('click', getFetch);
-
 
 // Fetch Function to get Image by todays data
 async function todaysImage(){
