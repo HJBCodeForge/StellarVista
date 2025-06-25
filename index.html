@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
   <title>StellarVista</title>
 </head>
@@ -32,7 +33,13 @@
         <p>Every morning, wake up to a new cosmic vista—planets, nebulae, galaxies, and more.</p>
         <button id="btnToday" class="btn">Explore Today</button>
         <p class="extraPadding">Or pick your custom data, and view the image of that day</p>
-        <input type="date" id="date" class="input" value=>
+        <input
+          type="date"
+          id="date"
+          class="input"
+          placeholder="YYYY-MM-DD"
+          pattern="\d{4}-\d{2}-\d{2}"
+        >
         <button id="btnGetImg" class="btn">Get Image</button>
     </div>
   </section>
@@ -43,7 +50,7 @@
     <div class="slides" id="slides">
         <div class="slide">
             <div class="image-wrapper">
-                <img id='todaysImg' src="" alt="">
+                <img id='todaysImg' loading="lazy" src="" alt="">
             </div>
             <div class="video-wrapper" id="video-wrapper">
                 <iframe id='todaysVid' src="" frameborder="0" alt="placeholder"></iframe>
