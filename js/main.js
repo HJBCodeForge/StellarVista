@@ -1,140 +1,350 @@
-// attach listener after DOM is ready
+// ─────────────────────────────────────────────────────────────────────────────
+// 1) Attach event listeners once the DOM is ready
+// ─────────────────────────────────────────────────────────────────────────────
+// When the user clicks “Explore Today,” call the todaysImage() function
 document.getElementById('btnToday')
-        .addEventListener('click', todaysImage);
+  .addEventListener('click', todaysImage);
 
-// Fetch Function to get Image by User Selected data
+// When the user clicks “Get Image,” call the getFetch() function
 document.getElementById('btnGetImg')
-        .addEventListener('click', getFetch);
+  .addEventListener('click', getFetch);
 
-//Set default date to currentday
+// // When the user clicks “prev” nav arrow call the prevDay function
+// document.getElementById('prev')
+//   .addEventListener('click', prevDay);
+
+// // When the user clicks “next” nav arrow call the nextDay function
+// document.getElementById('next')
+//   .addEventListener('click', nextDay);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2) Initialize the date picker to today’s date
+// ─────────────────────────────────────────────────────────────────────────────
+// Immediately set the <input type="date"> value to the current day
 setDefaultdate();
-function setDefaultdate(){
+function setDefaultdate() {
   const dateInput = document.getElementById("date");
-  dateInput.value = new Date().toISOString().slice(0,10);
-  return dateInput
-};
+  // ISO string is “YYYY-MM-DDTHH:mm:ss.sssZ”; slice to just “YYYY-MM-DD”
+  dateInput.value = new Date().toISOString().slice(0, 10);
+  return dateInput;  // return reference if you need it elsewhere
+}
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3) Retrieve the secret API key from your backend
+// ─────────────────────────────────────────────────────────────────────────────
+// This function calls your Render-hosted endpoint to fetch the NASA API key.
+// Note: Exposing the key this way still makes it visible in browser devtools.
 async function getApiKey() {
-    const response = await fetch('https://stellarvista.onrender.com/apikey');
-    const data = await response.json();
-    return data.apiKey;
+  // 3.1) Call your backend endpoint
+  const response = await fetch('https://stellarvista.onrender.com/apikey');
+  // 3.2) Parse JSON ({ apiKey: 'XYZ' })
+  const data = await response.json();
+  // 3.3) Return the raw key string
+  return data.apiKey;
 }
 
-// Fetch Function to get Image by todays data
-async function todaysImage(){
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4) Fetch & display today’s Astronomy Picture of the Day
+// ─────────────────────────────────────────────────────────────────────────────
+async function todaysImage() {
+  // 4.1) Wait for the API key
   const key = await getApiKey();
-  const today = new Date().toISOString().slice(0,10);
-  const url   = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${today}`;
+  // 4.2) Compute today’s date in YYYY-MM-DD format
+  const today = new Date().toISOString().slice(0, 10);
+  // 4.3) Build the NASA APOD URL
+  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${today}`;
   console.log('Fetching:', url);
 
-  const vidDisplay = document.getElementById('video-wrapper');
-  vidDisplay.style.display = 'block';
-
+  // 4.5) Perform the fetch request to NASA
   fetch(url)
-    .then(r => r.json())
+    .then(r => r.json())               // parse the JSON response
     .then(data => {
-      console.log(data);
+      console.log(data);               // debug log the API response
 
-      // grab our elements once
-      const img = document.getElementById('todaysImg');
-      const vid = document.getElementById('todaysVid');
+      // 4.6) Grab DOM elements once to avoid repeated lookups
+      const img     = document.getElementById('todaysImg');
+      const vid     = document.getElementById('todaysVid');
       const titleEl = document.getElementById('title');
       const explEl  = document.getElementById('explanation');
 
-      // clear previous media
+      // 4.7) Reset/hide previous media before rendering new
       img.style.display = 'none';
       vid.style.display = 'none';
       img.src = '';
       vid.src = '';
 
-      // update title & explanation
-      titleEl.innerText       = data.title || '';
-      explEl.innerText        = data.explanation || '';
+      // 4.8) Update title & explanation text
+      titleEl.innerText = data.title       || '';
+      explEl.innerText  = data.explanation || '';
 
+      // 4.9) Conditionally render video or image
       if (data.media_type === 'video') {
-        // If the API returns an embed_url, prefer that.
+        // Make sure the video-wrapper container is visible (in case it was hidden)
+        const vidDisplay = document.getElementById('video-wrapper');
+        vidDisplay.style.display = 'block';
+        // Prefer embed_url if provided
         let embed = data.embed_url || data.url;
 
-        // If it's a YouTube watch page, convert it to a proper embed link:
+        // Convert standard YouTube watch link to embed link
         if (embed.includes('youtube.com/watch')) {
           embed = embed.replace('watch?v=', 'embed/');
         }
 
-        vid.src           = embed;
-        vid.style.display = 'block';
+        vid.src           = embed;      // set iframe src
+        vid.style.display = 'block';    // show the video
       }
       else {
-        // An actual image file
+        // It's a static image
         img.src           = data.hdurl || data.url;
         img.style.display = 'block';
       }
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Uh oh—could not load today’s image. Try again later.');
-    });
-}
-
-
-async function getFetch(){
-  const key = await getApiKey();
-  const getDate = document.querySelector('input').value;
-  const url   = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
-  console.log('Fetching:', url);
-
-  fetch(url)
-    .then(r => r.json())
-    .then(data => {
-      console.log(data);
-
-      // grab our elements once
-      const img = document.getElementById('todaysImg');
-      const vid = document.getElementById('todaysVid');
-      const titleEl = document.getElementById('title');
-      const explEl  = document.getElementById('explanation');
-
-      // clear previous media
-      img.style.display = 'none';
-      vid.style.display = 'none';
-      img.src = '';
-      vid.src = '';
-
-      // update title & explanation
-      titleEl.innerText       = data.title || '';
-      explEl.innerText        = data.explanation || '';
-
-      if (data.media_type === 'video') {
-        // If the API returns an embed_url, prefer that.
-        let embed = data.embed_url || data.url;
-
-        // If it's a YouTube watch page, convert it to a proper embed link:
-        if (embed.includes('youtube.com/watch')) {
-          embed = embed.replace('watch?v=', 'embed/');
-        }
-
-        vid.src           = embed;
-        vid.style.display = 'block';
-      }
-      else {
-        // An actual image file
-        img.src           = data.hdurl || data.url;
-        img.style.display = 'block';
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Uh oh—could not load today’s image. Try again later.');
-    });
-}
-
-//Simple slider script
-    const slides = document.getElementById('slides');
-    const dots   = document.querySelectorAll('.dot');
-    dots.forEach(dot => {
-      dot.addEventListener('click', e => {
-        const idx = e.target.dataset.slide;
-        slides.style.transform = `translateX(-${idx * 100}%)`;
-        dots.forEach(d=>d.classList.remove('active'));
-        e.target.classList.add('active');
+    setTimeout(() => {
+      document.getElementById('onboarding').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
       });
+    }, 300);
+    })
+    .catch(err => {
+      // 4.10) Handle errors gracefully
+      console.error(err);
+      alert('Uh oh—could not load today’s image. Try again later.');
     });
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 5) Fetch & display the APOD for a user-selected date
+// ─────────────────────────────────────────────────────────────────────────────
+async function getFetch() {
+  // 5.1) Retrieve the API key and the user’s chosen date
+  const key     = await getApiKey();
+  const getDate = document.querySelector('input').value;
+
+  // 5.2) Build the fetch URL with the selected date
+  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
+  console.log('Fetching:', url);
+
+  // 5.3) Perform the request just like in todaysImage()
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+
+      // 5.4) Grab and reset DOM elements
+      const img     = document.getElementById('todaysImg');
+      const vid     = document.getElementById('todaysVid');
+      const titleEl = document.getElementById('title');
+      const explEl  = document.getElementById('explanation');
+
+      img.style.display = 'none';
+      vid.style.display = 'none';
+      img.src = '';
+      vid.src = '';
+
+      // 5.5) Update title & explanation
+      titleEl.innerText = data.title       || '';
+      explEl.innerText  = data.explanation || '';
+
+      // 5.6) Show video or image based on media_type
+      if (data.media_type === 'video') {
+        // Make sure the video-wrapper container is visible (in case it was hidden)
+        const vidDisplay = document.getElementById('video-wrapper');
+        vidDisplay.style.display = 'block';
+
+        let embed = data.embed_url || data.url;
+        if (embed.includes('youtube.com/watch')) {
+          embed = embed.replace('watch?v=', 'embed/');
+        }
+        vid.src           = embed;
+        vid.style.display = 'block';
+      } else {
+        img.src           = data.hdurl || data.url;
+        img.style.display = 'block';
+      }
+    setTimeout(() => {
+      document.getElementById('onboarding').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+      });
+    }, 300);
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Uh oh—could not load today’s image. Try again later.');
+    });
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 6) Simple slider navigation for the onboarding section
+// ─────────────────────────────────────────────────────────────────────────────
+
+//This function handles the "prev" button click
+async function prevDay() {
+  //Retrieve the API key and the user’s chosen date
+  const key     = await getApiKey();
+  const getDate = new Date().toISOString().slice(0, 10);
+
+  //Build the fetch URL with the selected date
+  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
+  console.log('Fetching:', url);
+
+  //Perform the request just like in todaysImage()
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+
+      //Grab and reset DOM elements
+      const img     = document.getElementById('todaysImg');
+      const vid     = document.getElementById('todaysVid');
+      const titleEl = document.getElementById('title');
+      const explEl  = document.getElementById('explanation');
+
+      img.style.display = 'none';
+      vid.style.display = 'none';
+      img.src = '';
+      vid.src = '';
+
+      //Update title & explanation
+      titleEl.innerText = data.title       || '';
+      explEl.innerText  = data.explanation || '';
+
+      //Show video or image based on media_type
+      if (data.media_type === 'video') {
+        // Make sure the video-wrapper container is visible (in case it was hidden)
+        const vidDisplay = document.getElementById('video-wrapper');
+        vidDisplay.style.display = 'block';
+
+        let embed = data.embed_url || data.url;
+        if (embed.includes('youtube.com/watch')) {
+          embed = embed.replace('watch?v=', 'embed/');
+        }
+        vid.src           = embed;
+        vid.style.display = 'block';
+      } else {
+        img.src           = data.hdurl || data.url;
+        img.style.display = 'block';
+      }
+    setTimeout(() => {
+      document.getElementById('onboarding').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+      });
+    }, 300);
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Uh oh—could not load today’s image. Try again later.');
+    });
+}
+
+// This function handles the "next" button click
+async function nextDay() {
+  //Retrieve the API key and the user’s chosen date
+  const key     = await getApiKey();
+  const getDate = new Date().toISOString().slice(0, 10);
+
+  //Build the fetch URL with the selected date
+  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
+  console.log('Fetching:', url);
+
+  //Perform the request just like in todaysImage()
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+
+      //Grab and reset DOM elements
+      const img     = document.getElementById('todaysImg');
+      const vid     = document.getElementById('todaysVid');
+      const titleEl = document.getElementById('title');
+      const explEl  = document.getElementById('explanation');
+
+      img.style.display = 'none';
+      vid.style.display = 'none';
+      img.src = '';
+      vid.src = '';
+
+      //Update title & explanation
+      titleEl.innerText = data.title       || '';
+      explEl.innerText  = data.explanation || '';
+
+      //Show video or image based on media_type
+      if (data.media_type === 'video') {
+        // Make sure the video-wrapper container is visible (in case it was hidden)
+        const vidDisplay = document.getElementById('video-wrapper');
+        vidDisplay.style.display = 'block';
+
+        let embed = data.embed_url || data.url;
+        if (embed.includes('youtube.com/watch')) {
+          embed = embed.replace('watch?v=', 'embed/');
+        }
+        vid.src           = embed;
+        vid.style.display = 'block';
+      } else {
+        img.src           = data.hdurl || data.url;
+        img.style.display = 'block';
+      }
+    setTimeout(() => {
+      document.getElementById('onboarding').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+      });
+    }, 300);
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Uh oh—could not load today’s image. Try again later.');
+    });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7) Date Updater: change the date input when prev/next buttons are clicked
+// ─────────────────────────────────────────────────────────────────────────────
+
+// 7.1) Grab references to your date input and arrow buttons
+const dateInput = document.getElementById('date');
+const prevBtn   = document.getElementById('prev-btn');
+const nextBtn   = document.getElementById('next-btn');
+
+// 7.2) Helper: shift the date input by a given number of days,
+//       clamping it so it never goes beyond today
+function changeDateBy(days) {
+  // 1) Parse the ISO-string as LOCAL date components
+  const [year, month, day] = dateInput.value
+    .split('-')
+    .map(str => parseInt(str, 10));
+
+  // monthIndex is zero-based!
+  const current = new Date(year, month - 1, day);
+
+  // 2) Shift by N days
+  current.setDate(current.getDate() + days);
+
+  // 3) Clamp to today (don’t go into the future)
+  const today = new Date();
+  if (current > today) {
+    current.setTime(today.getTime());
+  }
+
+  // 4) Re-format as YYYY-MM-DD
+  const y = current.getFullYear();
+  const m = String(current.getMonth() + 1).padStart(2, '0');
+  const d = String(current.getDate()).padStart(2, '0');
+  dateInput.value = `${y}-${m}-${d}`;
+}
+
+// 7.3) Wire up the Prev/Next buttons
+prevBtn.addEventListener('click', () => {
+  changeDateBy(-1);
+  getFetch();   // refresh the image for the new date
+});
+
+nextBtn.addEventListener('click', () => {
+  changeDateBy(1);
+  getFetch();   // refresh the image for the new date
+});
