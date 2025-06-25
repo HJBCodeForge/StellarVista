@@ -310,6 +310,7 @@ async function nextDay() {
 const dateInput = document.getElementById('date');
 const prevBtn   = document.getElementById('prev-btn');
 const nextBtn   = document.getElementById('next-btn');
+const nextBtnClass = document.getElementById('next-btn')
 
 // 7.2) Helper: shift the date input by a given number of days,
 //       clamping it so it never goes beyond today
@@ -336,6 +337,13 @@ function changeDateBy(days) {
   const m = String(current.getMonth() + 1).padStart(2, '0');
   const d = String(current.getDate()).padStart(2, '0');
   dateInput.value = `${y}-${m}-${d}`;
+
+  if (current >= today){
+    nextBtnClass.className = ''
+    nextBtnClass.className = 'nav-button-greyed'
+  } else {
+    nextBtnClass.className = 'nav-button'
+  }
 }
 
 // 7.3) Wire up the Prev/Next buttons
@@ -348,3 +356,4 @@ nextBtn.addEventListener('click', () => {
   changeDateBy(1);
   getFetch();   // refresh the image for the new date
 });
+
