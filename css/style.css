@@ -262,3 +262,85 @@
       height: 200px;
     }
   }
+
+/* ─────────────────────────────────────────────────────────────────────────
+  9) Date Picker styling
+────────────────────────────────────────────────────────────────────────── */
+  /* 1) Base picker background & text */
+.datepicker {
+  background-color: #1e1e2e;    /* dark indigo */
+  color: #5f5fac;               /* shimmering silver */
+  border: 1px solid #3a3f68;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+}
+
+/* 2) Header (month + year) */
+.datepicker-header {
+  background-color: #3a3f68;    /* deep indigo */
+  color: #5f5fac;
+  padding: 0.5em;
+  font-weight: bold;
+}
+
+/* 3) Nav arrows */
+.datepicker .prev, 
+.datepicker .next {
+  color: #a2fdde;               /* cosmic teal */
+  filter: drop-shadow(0 0 0.2em #000);
+}
+.datepicker .prev:hover,
+.datepicker .next:hover {
+  color: #5f5fac;               /* highlight on hover */
+}
+
+/* 4) Day-of-week row (Mon, Tue…) */
+.datepicker-days thead th {
+  color: #d8b8ff;               /* soft lavender */
+  font-weight: normal;
+}
+
+/* 5) Individual day cells */
+.datepicker-days td.day {
+  background: transparent;
+  border-radius: 0.25rem;
+  transition: background 0.2s;
+}
+
+/* hover effect */
+.datepicker-days td.day:hover {
+  background: #5f5fac;          /* indigo gradient end */
+  color: #fff;
+}
+
+/* today’s date */
+.datepicker-days td.today {
+  border: 1px solid var(--secondary-1);  /* cosmic teal ring */
+}
+
+/* selected date */
+.datepicker-days td.selected,
+.datepicker-days td.selected:hover {
+  background: var(--secondary-1);        /* cosmic teal */
+  color: #111;
+}
+
+/* 6) Footer / “Today” button */
+.datepicker-footer {
+  text-align: center;
+  padding: 0.5em;
+}
+.datepicker-footer .btn {
+  background: var(--secondary-2); /* soft lavender */
+  color: #111;
+  border-radius: 4px;
+}
+.datepicker-footer .btn:hover {
+  background: var(--secondary-3); /* cosmic teal */
+}
+
+/* 7) Mobile tweak (full width) */
+@media (max-width: 400px) {
+  .datepicker {
+    width: 100%;
+  }
+}

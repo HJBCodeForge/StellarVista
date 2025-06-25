@@ -15,6 +15,15 @@ document.getElementById('btnGetImg')
 // 2) Initialize the date picker to today’s date
 // ─────────────────────────────────────────────────────────────────────────────
 // Immediately set the <input type="date"> value to the current day
+const dateElem = document.getElementById('date');
+const picker = new Datepicker(dateElem, {
+  format: 'yyyy-mm-dd',   // enforce ISO format
+  autohide: true,         // close after select
+  maxDate: new Date(),    // can’t pick future
+  minDate: new Date(1995, 5, 16),  // June is monthIndex 5 → June 16 1995
+  todayBtn: true,         // “Today” shortcut
+});
+
 setDefaultdate();
 function setDefaultdate() {
   const dateInput = document.getElementById("date");
