@@ -364,6 +364,6 @@ prevBtn.addEventListener('click', () => {
 
 nextBtn.addEventListener('click', () => {
   changeDateBy(1);
-  getFetch();   // refresh the image for the new date
+  getFetch();   // refresh the image for the new date 
 });
 
