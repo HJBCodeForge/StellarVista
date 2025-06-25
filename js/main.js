@@ -9,13 +9,7 @@ document.getElementById('btnToday')
 document.getElementById('btnGetImg')
   .addEventListener('click', getFetch);
 
-// // When the user clicks “prev” nav arrow call the prevDay function
-// document.getElementById('prev')
-//   .addEventListener('click', prevDay);
 
-// // When the user clicks “next” nav arrow call the nextDay function
-// document.getElementById('next')
-//   .addEventListener('click', nextDay);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 2) Initialize the date picker to today’s date
@@ -29,6 +23,22 @@ function setDefaultdate() {
   return dateInput;  // return reference if you need it elsewhere
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// 2) PreLoad daily image in document head.
+// ─────────────────────────────────────────────────────────────────────────────
+(async function preloadApodFetch() {
+  // 1) Grab the key & compute today’s date
+  const key   = await getApiKey();
+  const today = new Date().toISOString().slice(0,10);
+  // 2) Create the link tag
+  const link  = document.createElement('link');
+  link.rel    = 'preload';
+  link.as     = 'fetch';
+  link.crossOrigin = 'anonymous';
+  link.href   = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${today}`;
+  // 3) Append it to the head so the browser starts the request
+  document.head.appendChild(link);
+})();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3) Retrieve the secret API key from your backend
