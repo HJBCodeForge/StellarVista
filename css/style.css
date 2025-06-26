@@ -106,6 +106,25 @@
     padding-top: 0.75rem;
   }
 
+  /* ensure input can shrink to its content */
+  #date {
+    display: inline-block;        /* allow auto sizing */
+    width: fit-content;           /* shrink-wrap its contents */
+    width: -moz-fit-content;      /* Firefox */
+    width: -webkit-fit-content;   /* Safari/Chrome */
+    min-width: 10ch;              /* at least “YYYY-MM-DD” long */
+    box-sizing: content-box;      /* width excludes padding */
+    text-align: center;
+    margin: 1rem auto;
+  }
+
+  /* your existing padding from .input will now expand beyond that */
+  .input {
+    padding: .75rem 1rem;         /* you may reduce horizontal padding */
+    /* …other styles… */
+  }
+
+
   /* Horizon arc expand animation */
   @keyframes arcExpand {
     0% { transform: scaleX(0.2) scaleY(0.2); opacity:0; }
