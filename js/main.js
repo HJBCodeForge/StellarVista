@@ -131,6 +131,7 @@ async function todaysImage() {
       console.error(err);
       alert('Uh oh—could not load today’s image. Try again later.');
     });
+  updateNextButtonState();
 }
 
 
@@ -194,6 +195,7 @@ async function getFetch() {
       console.error(err);
       alert('Uh oh—could not load today’s image. Try again later.');
     });
+  updateNextButtonState();
 }
 
 
@@ -259,6 +261,7 @@ async function prevDay() {
       console.error(err);
       alert('Uh oh—could not load today’s image. Try again later.');
     });
+  updateNextButtonState();
 }
 
 // This function handles the "next" button click
@@ -308,6 +311,7 @@ async function nextDay() {
         img.src           = data.hdurl || data.url;
         img.style.display = 'block';
       }
+
     setTimeout(() => {
       document.getElementById('onboarding').scrollIntoView({
       behavior: 'smooth',
@@ -319,6 +323,37 @@ async function nextDay() {
       console.error(err);
       alert('Uh oh—could not load today’s image. Try again later.');
     });
+  updateNextButtonState();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Date next-Btn State: change the to be greyed out, when selected date matched urrent date
+// ─────────────────────────────────────────────────────────────────────────────
+function updateNextButtonState() {
+  const dateInput = document.getElementById('date');
+  const nextBtn = document.getElementById('next-btn');
+
+  const currentDate = new Date();
+  const selectedDateParts = dateInput.value.split('-').map(Number);
+  const selectedDate = new Date(
+    selectedDateParts[0],  // year
+    selectedDateParts[1] - 1,  // month (zero-based)
+    selectedDateParts[2]   // day
+  );
+
+  // Remove time to compare just the date portion
+  currentDate.setHours(0,0,0,0);
+  selectedDate.setHours(0,0,0,0);
+
+  if (selectedDate.getTime() === currentDate.getTime()) {
+    // Disable Next and grey it out
+    nextBtn.classList.add('nav-button-greyed');
+    nextBtn.disabled = true;
+  } else {
+    // Re-enable Next
+    nextBtn.classList.remove('nav-button-greyed');
+    nextBtn.disabled = false;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -356,13 +391,6 @@ function changeDateBy(days) {
   const m = String(current.getMonth() + 1).padStart(2, '0');
   const d = String(current.getDate()).padStart(2, '0');
   dateInput.value = `${y}-${m}-${d}`;
-
-  if (current >= today){
-    nextBtnClass.className = ''
-    nextBtnClass.className = 'nav-button-greyed'
-  } else {
-    nextBtnClass.className = 'nav-button'
-  }
 }
 
 // 7.3) Wire up the Prev/Next buttons
@@ -375,4 +403,3 @@ nextBtn.addEventListener('click', () => {
   changeDateBy(1);
   getFetch();   // refresh the image for the new date 
 });
-
