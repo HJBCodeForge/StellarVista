@@ -60,5 +60,14 @@ app.get('/apod', async (req, res) => {
   }
 });
 
+// Turn CORS rejections into a clean 403 instead of a generic 500.
+app.use((err, req, res, next) => {
+  if (err && err.message === 'Not allowed by CORS') {
+    return res.status(403).json({error: 'Origin not allowed'});
+  }
+  console.error(err);
+  res.status(500).json({error: 'Internal server error'});
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`StellarVista API listening on port ${PORT}`));
