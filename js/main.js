@@ -36,31 +36,28 @@ function setDefaultdate() {
 // 2) PreLoad daily image in document head.
 // ─────────────────────────────────────────────────────────────────────────────
 (async function preloadApodFetch() {
-  // 1) Grab the key & compute today’s date
-  const key   = await getApiKey();
+  // 1) Compute today’s date
   const today = new Date().toISOString().slice(0,10);
-  // 2) Create the link tag
+  // 2) Create the link tag pointing at the backend proxy
+  //    (the NASA API key stays server-side and is never sent to the browser)
   const link  = document.createElement('link');
   link.rel    = 'preload';
   link.as     = 'fetch';
   link.crossOrigin = 'anonymous';
-  link.href   = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${today}`;
+  link.href   = apodUrl(today);
   // 3) Append it to the head so the browser starts the request
   document.head.appendChild(link);
 })();
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 3) Retrieve the secret API key from your backend
+// 3) Fetch APOD data through the backend proxy
 // ─────────────────────────────────────────────────────────────────────────────
-// This function calls your Render-hosted endpoint to fetch the NASA API key.
-// Note: Exposing the key this way still makes it visible in browser devtools.
-async function getApiKey() {
-  // 3.1) Call your backend endpoint
-  const response = await fetch('https://stellarvista.onrender.com/apikey');
-  // 3.2) Parse JSON ({ apiKey: 'XYZ' })
-  const data = await response.json();
-  // 3.3) Return the raw key string
-  return data.apiKey;
+// The browser never sees the NASA API key. It asks the Render-hosted backend
+// for the APOD payload and the backend adds the key server-side.
+const API_BASE = 'https://stellarvista.onrender.com';
+
+function apodUrl(date) {
+  return `${API_BASE}/apod${date ? `?date=${date}` : ''}`;
 }
 
 
@@ -68,12 +65,10 @@ async function getApiKey() {
 // 4) Fetch & display today’s Astronomy Picture of the Day
 // ─────────────────────────────────────────────────────────────────────────────
 async function todaysImage() {
-  // 4.1) Wait for the API key
-  const key = await getApiKey();
-  // 4.2) Compute today’s date in YYYY-MM-DD format
+  // 4.1) Compute today’s date in YYYY-MM-DD format
   const today = new Date().toISOString().slice(0, 10);
-  // 4.3) Build the NASA APOD URL
-  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${today}`;
+  // 4.2) Ask the backend proxy for today’s APOD (key stays server-side)
+  const url = apodUrl(today);
   console.log('Fetching:', url);
 
   // 4.5) Perform the fetch request to NASA
@@ -139,12 +134,11 @@ async function todaysImage() {
 // 5) Fetch & display the APOD for a user-selected date
 // ─────────────────────────────────────────────────────────────────────────────
 async function getFetch() {
-  // 5.1) Retrieve the API key and the user’s chosen date
-  const key     = await getApiKey();
+  // 5.1) Get the user’s chosen date
   const getDate = document.querySelector('input').value;
 
-  // 5.2) Build the fetch URL with the selected date
-  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
+  // 5.2) Ask the backend proxy for the APOD of the selected date
+  const url = apodUrl(getDate);
   console.log('Fetching:', url);
 
   // 5.3) Perform the request just like in todaysImage()
@@ -205,12 +199,11 @@ async function getFetch() {
 
 //This function handles the "prev" button click
 async function prevDay() {
-  //Retrieve the API key and the user’s chosen date
-  const key     = await getApiKey();
+  //Get today’s date
   const getDate = new Date().toISOString().slice(0, 10);
 
-  //Build the fetch URL with the selected date
-  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
+  //Ask the backend proxy for the APOD of that date
+  const url = apodUrl(getDate);
   console.log('Fetching:', url);
 
   //Perform the request just like in todaysImage()
@@ -266,12 +259,11 @@ async function prevDay() {
 
 // This function handles the "next" button click
 async function nextDay() {
-  //Retrieve the API key and the user’s chosen date
-  const key     = await getApiKey();
+  //Get today’s date
   const getDate = new Date().toISOString().slice(0, 10);
 
-  //Build the fetch URL with the selected date
-  const url = `https://api.nasa.gov/planetary/apod?api_key=${key}&date=${getDate}`;
+  //Ask the backend proxy for the APOD of that date
+  const url = apodUrl(getDate);
   console.log('Fetching:', url);
 
   //Perform the request just like in todaysImage()
